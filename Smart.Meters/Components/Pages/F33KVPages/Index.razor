@@ -1,0 +1,23 @@
+﻿@page "/f33kvs"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject Smart.Meters.Data.ApplicationDbContext DB
+@using Smart.Meters.Model
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="f33kvs/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="DB.F33KV">
+    <PropertyColumn Property="f33kv => f33kv.Description" />
+    <PropertyColumn Property="f33kv => f33kv.Code" />
+
+    <TemplateColumn Context="f33kv">
+        <a href="@($"f33kvs/edit?id={f33kv.ID}")">Edit</a> |
+        <a href="@($"f33kvs/details?id={f33kv.ID}")">Details</a> |
+        <a href="@($"f33kvs/delete?id={f33kv.ID}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>

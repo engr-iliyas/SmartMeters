@@ -1,0 +1,32 @@
+﻿@implements INav
+
+<li class="menu-item @(ContainerNavSet?.ActiveNav == this ? "active open" : null)">
+    <a class="menu-link menu-toggle">
+        <i class="menu-icon tf-icons bx @(S ? "bxs" : "bx")-@Icon"></i>
+        <div data-i18n="@Title">@Title</div>
+        @if (Badge is not 0)
+        {
+            <div class="badge bg-danger rounded-pill ms-auto">@Badge</div>
+        }
+    </a>
+    <ul class="menu-sub">
+        <CascadingValue Value="this">
+            @ChildContent
+        </CascadingValue>
+    </ul>
+</li>
+
+@code {
+    bool Active = false;
+    [CascadingParameter] public NavSet? ContainerNavSet { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public bool S { get; set; } = false;
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public int Badge { get; set; } = 0;
+    public void Refresh()
+    {
+        // Active = ContainerNavSet?.ActiveNav == this;
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,53 @@
+﻿@page "/f11kvs/create"
+@inject Smart.Meters.Data.ApplicationDbContext DB
+@using Smart.Meters.Model
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h4>F11KV</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="F11KV" OnValidSubmit="AddF11KV" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+            <div class="mb-3">
+                <label for="f33kvid" class="form-label">F33KVID:</label> 
+                <InputNumber id="f33kvid" @bind-Value="F11KV.F33KVID" class="form-control" /> 
+                <ValidationMessage For="() => F11KV.F33KVID" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="description" class="form-label">Description:</label> 
+                <InputText id="description" @bind-Value="F11KV.Description" class="form-control" /> 
+                <ValidationMessage For="() => F11KV.Description" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="code" class="form-label">Code:</label> 
+                <InputText id="code" @bind-Value="F11KV.Code" class="form-control" /> 
+                <ValidationMessage For="() => F11KV.Code" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/f11kvs">Back to List</a>
+</div>
+
+@code {
+
+    [SupplyParameterFromForm]
+    public F11KV F11KV { get; set; } = new();
+
+    // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+    public async Task AddF11KV()
+    {
+        DB.F11KV.Add(F11KV);
+        await DB.SaveChangesAsync();
+        NavigationManager.NavigateTo("/f11kvs");
+    }
+}

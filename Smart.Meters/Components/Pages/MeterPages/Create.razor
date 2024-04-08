@@ -1,0 +1,110 @@
+﻿@page "/meters/create"
+@inject Smart.Meters.Data.ApplicationDbContext DB
+@using Smart.Meters.Components.Wizard
+@using Smart.Meters.Model
+@using System.ComponentModel.DataAnnotations
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create Meter</h1>
+
+<hr />
+
+<div class="card mb-4">
+    <div class="card-body">
+        <Wizard @ref=wizard>
+            <Step Title="Profile" Subtitle="Add meter profile">
+                <EditForm Model="Profile" OnValidSubmit="@AddProfile">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="text-danger" />
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">IP:</label>
+                            <InputText @bind-Value="Profile.IP" class="form-control" />
+                            <ValidationMessage For="() => Profile.IP" class="text-danger" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Port:</label>
+                            <InputText @bind-Value="Profile.Port" class="form-control" />
+                            <ValidationMessage For="() => Profile.Port" class="text-danger" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Sim Card Number:</label>
+                            <InputText @bind-Value="Profile.SimCardNumber" class="form-control" />
+                            <ValidationMessage For="() => Profile.SimCardNumber" class="text-danger" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">HDLC Address:</label>
+                            <InputText @bind-Value="Profile.HDLC_Address" class="form-control" />
+                            <ValidationMessage For="() => Profile.HDLC_Address" class="text-danger" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Transmission Mode:</label>
+                            <InputText @bind-Value="Profile.TransmissionMode" class="form-control" />
+                            <ValidationMessage For="() => Profile.TransmissionMode" class="text-danger" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Meter Remote Mode:</label>
+                            <InputText @bind-Value="Profile.MeterRemoteMode" class="form-control" />
+                            <ValidationMessage For="() => Profile.MeterRemoteMode" class="text-danger" />
+                        </div>
+                    </div>
+                    <Submit Back="wizard!.GoBack" DisableBack=@(wizard!.ActiveStepIx == 0) IsLast=wizard!.IsLastStep />
+                </EditForm>
+            </Step>
+            <Step Title="Meter" Subtitle="Add meter details">
+                <EditForm method="post" Model="Meter" OnValidSubmit="AddMeter" FormName="create" Enhance>
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="text-danger" />
+                    <div class="mb-3">
+                        <label for="model" class="form-label">Meter Serial Number:</label>
+                        <InputNumber id="model" @bind-Value="Meter.ID" class="form-control" />
+                        <ValidationMessage For="() => Meter.ID" class="text-danger" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="model" class="form-label">Model:</label>
+                        <InputText id="model" @bind-Value="Meter.Model" class="form-control" />
+                        <ValidationMessage For="() => Meter.Model" class="text-danger" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="seal" class="form-label">Seal:</label>
+                        <InputText id="seal" @bind-Value="Meter.Seal" class="form-control" />
+                        <ValidationMessage For="() => Meter.Seal" class="text-danger" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="installationdate" class="form-label">InstallationDate:</label>
+                        <InputDate id="installationdate" @bind-Value="Meter.InstallationDate" class="form-control" />
+                        <ValidationMessage For="() => Meter.InstallationDate" class="text-danger" />
+                    </div>
+                    <Submit Back="wizard!.GoBack" DisableBack=@(wizard!.ActiveStepIx == 0) IsLast=wizard!.IsLastStep />
+                </EditForm>
+            </Step>
+            <Step Title="Customer" Subtitle="Attach a customer"/>
+        </Wizard>
+    </div>
+</div>
+
+<div>
+    <a href="/meters">Back to List</a>
+</div>
+
+@code {
+    Wizard wizard = default!;
+    public Meter Meter { get; set; } = new();
+    public Profile Profile { get; set; } = new();
+
+    // To protect from overposting attacks, 
+    // See https://aka.ms/RazorPagesCRUD
+    public void AddProfile()
+    {
+        Meter.Profile = Profile;
+        wizard!.GoNext();
+    }
+    public async Task AddMeter()
+    {
+        DB.Meter.Add(Meter);
+        await DB.SaveChangesAsync();
+        NavigationManager.NavigateTo("/meters");
+    }
+}

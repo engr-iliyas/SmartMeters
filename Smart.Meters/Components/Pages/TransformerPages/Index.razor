@@ -1,0 +1,23 @@
+﻿@page "/transformers"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject Smart.Meters.Data.ApplicationDbContext DB
+@using Smart.Meters.Model
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="transformers/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="DB.Transformer">
+    <PropertyColumn Property="transformer => transformer.Description" />
+    <PropertyColumn Property="transformer => transformer.Code" />
+
+    <TemplateColumn Context="transformer">
+        <a href="@($"transformers/edit?id={transformer.ID}")">Edit</a> |
+        <a href="@($"transformers/details?id={transformer.ID}")">Details</a> |
+        <a href="@($"transformers/delete?id={transformer.ID}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>

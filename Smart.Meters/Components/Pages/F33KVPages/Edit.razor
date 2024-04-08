@@ -1,0 +1,91 @@
+﻿@page "/F33KVs/edit"
+@inject Smart.Meters.Data.ApplicationDbContext DB
+@using Smart.Meters.Model
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h4>F33KV</h4>
+<hr />
+@if (F33KV is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="F33KV" OnValidSubmit="UpdateF33KV" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <input type="hidden" name="F33KV.ID" value="@F33KV.ID" />
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <InputText id="description" @bind-Value="F33KV.Description" class="form-control" />
+                    <ValidationMessage For="() => F33KV.Description" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="code" class="form-label">Code:</label>
+                    <InputText id="code" @bind-Value="F33KV.Code" class="form-control" />
+                    <ValidationMessage For="() => F33KV.Code" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/f33kvs">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    public int ID { get; set; }
+
+    [SupplyParameterFromForm]
+    public F33KV? F33KV { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        F33KV ??= await DB.F33KV.FirstOrDefaultAsync(m => m.ID == ID);
+
+        if (F33KV is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see https://aka.ms/RazorPagesCRUD.
+    public async Task UpdateF33KV()
+    {
+        DB.Attach(F33KV!).State = EntityState.Modified;
+
+        try
+        {
+            await DB.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!F33KVExists(F33KV!.ID))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/f33kvs");
+    }
+
+    bool F33KVExists(int id)
+    {
+        return DB.F33KV.Any(e => e.ID == id);
+    }
+}

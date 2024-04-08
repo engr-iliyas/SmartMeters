@@ -1,0 +1,35 @@
+﻿
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+
+    <AppTitle Title="Sneat" />
+
+    <CascadingValue Value="this">
+        <ul class="menu-inner py-1">
+            @ChildContent
+        </ul>
+    </CascadingValue>
+</aside>       
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    public INav? ActiveNav { get; private set; }
+
+    public void AddNav(INav Nav)
+    {
+        if (ActiveNav is null)
+        {
+            SetActiveNav(Nav);
+        }
+    }
+
+    public void SetActiveNav(INav Nav)
+    {
+        if (ActiveNav != Nav)
+        {
+            ActiveNav = Nav;
+            StateHasChanged();
+        }
+    }
+}

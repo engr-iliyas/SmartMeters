@@ -1,0 +1,92 @@
+﻿@using Smart.Meters.Model
+
+<CascadingValue Value="this">
+    <div class="bs-stepper wizard-numbered mt-2">
+        <div class="bs-stepper-header">
+            @foreach (var step in Steps)
+            {
+                <div class="step @((ActiveStep == step) ? "active" : "")">
+                    @if (!(StepsIndex(ActiveStep!) >= StepsIndex(step)))
+                    {
+                        <button type="button" class="step-trigger" @onclick="@(e=> SetActive(step))" disabled>
+                            <span class="bs-stepper-circle">@(StepsIndex(step) + 1)</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">@step.Title</span>
+                                <span class="bs-stepper-subtitle">@step.Subtitle</span>
+                            </span>
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="button" class="step-trigger" @onclick="@(e=> SetActive(step))">
+                            <span class="bs-stepper-circle">@(StepsIndex(step) + 1)</span>
+                            <span class="bs-stepper-label mt-1">
+                                <span class="bs-stepper-title">@step.Title</span>
+                                <span class="bs-stepper-subtitle">@step.Subtitle</span>
+                            </span>
+                        </button>
+                    }
+                </div>
+                <div class="line">
+                    <i class="bx bx-chevron-right"></i>
+                </div>
+            }
+        </div>
+
+        <hr />
+
+        <div class="bs-stepper-content">
+            @ChildContent
+        </div>
+    </div>
+</CascadingValue>
+
+@code {
+    [Parameter] public int ActiveStepIx { get; set; }
+    [Parameter] public Step? ActiveStep { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    public bool IsLastStep { get; set; }
+    protected internal void GoBack()
+    {
+        if (ActiveStepIx > 0)
+            SetActive(Steps[ActiveStepIx - 1]);
+    }
+    protected internal void GoNext()
+    {
+        if (ActiveStepIx < Steps.Count - 1)
+            SetActive(Steps[(Steps.IndexOf(ActiveStep!) + 1)]);
+    }
+
+    protected internal List<Step> Steps = new();
+    protected internal void AddStep(Step step)
+    {
+        Steps.Add(step);
+    }
+    protected internal void SetActive(Step step)
+    {
+        ActiveStep = step ?? throw new ArgumentNullException(nameof(step));
+
+        ActiveStepIx = StepsIndex(step);
+        if (ActiveStepIx == Steps.Count - 1)
+            IsLastStep = true;
+        else
+            IsLastStep = false;
+    }
+    public int StepsIndex(Step step) => StepsIndexInternal(step);
+    protected int StepsIndexInternal(Step step)
+    {
+        if (step == null)
+            throw new ArgumentNullException(nameof(step));
+
+        return Steps.IndexOf(step);
+    }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            SetActive(Steps[0]);
+            StateHasChanged();
+        }
+    }
+}

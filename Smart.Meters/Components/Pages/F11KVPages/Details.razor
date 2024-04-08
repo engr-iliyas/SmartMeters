@@ -1,0 +1,49 @@
+﻿@page "/f11kvs/details"
+@inject Smart.Meters.Data.ApplicationDbContext DB
+@using Smart.Meters.Model
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h4>F11KV</h4>
+    <hr />
+    @if (f11kv is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">F33KVID</dt>
+            <dd class="col-sm-10">@f11kv.F33KVID</dd>
+            <dt class="col-sm-2">Description</dt>
+            <dd class="col-sm-10">@f11kv.Description</dd>
+            <dt class="col-sm-2">Code</dt>
+            <dd class="col-sm-10">@f11kv.Code</dd>
+        </dl>
+        <div>
+            <a href="@($"/f11kvs/edit?id={f11kv.ID}")">Edit</a> |
+            <a href="@($"/f11kvs")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    F11KV? f11kv;
+
+    [SupplyParameterFromQuery]
+    public int ID { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        f11kv = await DB.F11KV.FirstOrDefaultAsync(m => m.ID == ID);
+
+        if (f11kv is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

@@ -1,0 +1,24 @@
+﻿@page "/f11kvs"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject Smart.Meters.Data.ApplicationDbContext DB
+@using Smart.Meters.Model
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="f11kvs/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="DB.F11KV">
+    <PropertyColumn Property="f11kv => f11kv.F33KVID" />
+    <PropertyColumn Property="f11kv => f11kv.Description" />
+    <PropertyColumn Property="f11kv => f11kv.Code" />
+
+    <TemplateColumn Context="f11kv">
+        <a href="@($"f11kvs/edit?id={f11kv.ID}")">Edit</a> |
+        <a href="@($"f11kvs/details?id={f11kv.ID}")">Details</a> |
+        <a href="@($"f11kvs/delete?id={f11kv.ID}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>

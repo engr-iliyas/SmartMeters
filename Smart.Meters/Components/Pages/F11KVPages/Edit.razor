@@ -1,0 +1,96 @@
+﻿@page "/F11KVs/edit"
+@inject Smart.Meters.Data.ApplicationDbContext DB
+@using Smart.Meters.Model
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h4>F11KV</h4>
+<hr />
+@if (F11KV is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="F11KV" OnValidSubmit="UpdateF11KV" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <input type="hidden" name="F11KV.ID" value="@F11KV.ID" />
+                <div class="mb-3">
+                    <label for="f33kvid" class="form-label">F33KVID:</label>
+                    <InputNumber id="f33kvid" @bind-Value="F11KV.F33KVID" class="form-control" />
+                    <ValidationMessage For="() => F11KV.F33KVID" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <InputText id="description" @bind-Value="F11KV.Description" class="form-control" />
+                    <ValidationMessage For="() => F11KV.Description" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="code" class="form-label">Code:</label>
+                    <InputText id="code" @bind-Value="F11KV.Code" class="form-control" />
+                    <ValidationMessage For="() => F11KV.Code" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/f11kvs">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    public int ID { get; set; }
+
+    [SupplyParameterFromForm]
+    public F11KV? F11KV { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        F11KV ??= await DB.F11KV.FirstOrDefaultAsync(m => m.ID == ID);
+
+        if (F11KV is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see https://aka.ms/RazorPagesCRUD.
+    public async Task UpdateF11KV()
+    {
+        DB.Attach(F11KV!).State = EntityState.Modified;
+
+        try
+        {
+            await DB.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!F11KVExists(F11KV!.ID))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/f11kvs");
+    }
+
+    bool F11KVExists(int id)
+    {
+        return DB.F11KV.Any(e => e.ID == id);
+    }
+}

@@ -1,0 +1,91 @@
+﻿@page "/Transformers/edit"
+@inject Smart.Meters.Data.ApplicationDbContext DB
+@using Smart.Meters.Model
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h4>Transformer</h4>
+<hr />
+@if (Transformer is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Transformer" OnValidSubmit="UpdateTransformer" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <input type="hidden" name="Transformer.ID" value="@Transformer.ID" />
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <InputText id="description" @bind-Value="Transformer.Description" class="form-control" />
+                    <ValidationMessage For="() => Transformer.Description" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="code" class="form-label">Code:</label>
+                    <InputText id="code" @bind-Value="Transformer.Code" class="form-control" />
+                    <ValidationMessage For="() => Transformer.Code" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/transformers">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    public int ID { get; set; }
+
+    [SupplyParameterFromForm]
+    public Transformer? Transformer { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Transformer ??= await DB.Transformer.FirstOrDefaultAsync(m => m.ID == ID);
+
+        if (Transformer is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see https://aka.ms/RazorPagesCRUD.
+    public async Task UpdateTransformer()
+    {
+        DB.Attach(Transformer!).State = EntityState.Modified;
+
+        try
+        {
+            await DB.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!TransformerExists(Transformer!.ID))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/transformers");
+    }
+
+    bool TransformerExists(int id)
+    {
+        return DB.Transformer.Any(e => e.ID == id);
+    }
+}

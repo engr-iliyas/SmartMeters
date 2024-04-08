@@ -1,0 +1,60 @@
+﻿@implements INav
+@inject NavigationManager NavigationManager
+
+<li class="menu-item @(NavigationManager.Uri == NavigationManager.ToAbsoluteUri(Link).AbsoluteUri ? "active" : null)" @onclick="Action">
+    <a @onclick="ActivateNav" href="@Link" class="menu-link" role="button">
+        @if (string.IsNullOrEmpty(Icon))
+        {
+            @ChildContent
+        }
+        else
+        {
+            <i class="menu-icon tf-icons bx @(S ? "bxs" : "bx")-@Icon"></i>
+        }
+        <div class="text-truncate" data-i18n="@Title">
+            @Title
+        </div>
+    </a>
+</li>
+
+
+
+@code {
+    [CascadingParameter] public NavSet? ContainerNavSet { get; set; }
+    [CascadingParameter] public NavGroup? ContainerNavGroup { get; set; }
+    [Parameter] public string? Link { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public bool S { get; set; } = false;
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public EventCallback Action { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (NavigationManager.Uri == NavigationManager.ToAbsoluteUri(Link).AbsoluteUri && ContainerNavGroup is not null)
+        {
+            ContainerNavGroup.ContainerNavSet?.SetActiveNav(ContainerNavGroup);
+            ContainerNavGroup.Refresh();
+        }
+        else if (NavigationManager.Uri == NavigationManager.ToAbsoluteUri(Link).AbsoluteUri)
+        {
+            ContainerNavSet?.SetActiveNav(this);
+        }
+    }
+
+    private void ActivateNav()
+    {
+        if (/* NavigationManager.Uri == NavigationManager.ToAbsoluteUri(Link).AbsoluteUri &&  */ContainerNavGroup is not null)
+        {
+            ContainerNavGroup.ContainerNavSet?.SetActiveNav(ContainerNavGroup);
+            // ContainerNavGroup?.SetActiveNav(this);
+            ContainerNavGroup.Refresh();
+        }
+        else
+        {
+            ContainerNavSet?.SetActiveNav(this);
+        }
+        StateHasChanged();
+    }
+}

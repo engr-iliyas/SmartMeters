@@ -1,0 +1,89 @@
+﻿@page "/"
+@using ApexCharts
+@using Smart.Meters.Components.Layout
+<PageTitle>Home</PageTitle>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <Card T="int" Title="Total Connected Devices" Content="142" />
+            <Card T="int" Title="Total Disconnected Devices" Content="27" />
+            <Card T="string" Title="Total Imported Energy" Content="@("14,857 KV")" />
+            <Card T="string" Title="Total Exported Energy" Content="@("4,679 KV")" />
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="card">
+            <div class="row row-bordered g-0">
+                <div class="col-md-6">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Total Energy</h5>
+                        <small class="card-subtitle">Yearly report overview</small>
+                    </div>
+                    <div class="card-body" style="position: relative;">
+                        <ApexChart TItem="MyData">
+
+                            <ApexPointSeries TItem="MyData"
+                                             Items="Data"
+                                             Name="Live Energy"
+                                             SeriesType="SeriesType.Area"
+                                             XValue="e => e.Category"
+                                             YValue="e=> e.Revenue" />
+                        </ApexChart>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Total Energy</h5>
+                        <small class="card-subtitle">Yearly report overview</small>
+                    </div>
+                    <div class="card-body" style="position: relative;">
+                        <ApexChart TItem="MyData" Options=options>
+
+                            <ApexPointSeries TItem="MyData"
+                                             Items="Data"
+                                             Name="Energy/Feeders"
+                                             SeriesType="SeriesType.Bar"
+                                             XValue="e => e.Feeder"
+                                             YValue="e=> e.NetProfit" />
+                        </ApexChart>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<MyData> Data { get; set; } = new();
+    private ApexChartOptions<MyData> options { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        options.Xaxis = new XAxis { Labels = new XAxisLabels { Rotate = -90, RotateAlways = true } };
+        // options.Yaxis = new List<YAxis> { new YAxis { Labels = new YAxisLabels { Rotate = 45 } } };
+        // options.Tooltip = new ApexCharts.Tooltip { Custom = @"function({series, seriesIndex, dataPointIndex, w}) { var data = w.globals.initialSeries[seriesIndex].data[dataPointIndex];  return '<div>' + data.x + ': ' +  data.y + '</div>' }" }
+        ;
+        Data.Add(new MyData { Category = "Jan", Feeder = "JOS", NetProfit = 12, Revenue = 33 });
+        Data.Add(new MyData { Category = "Feb", Feeder = "AZARE", NetProfit = 43, Revenue = 42 });
+        Data.Add(new MyData { Category = "Mar", Feeder = "DASS", NetProfit = 112, Revenue = 23 });
+        Data.Add(new MyData { Category = "Apr", Feeder = "DCP I", NetProfit = 75, Revenue = 58 });
+        Data.Add(new MyData { Category = "May", Feeder = "DCP II", NetProfit = 90, Revenue = 60 });
+        Data.Add(new MyData { Category = "Jun", Feeder = "GUBI", NetProfit = 120, Revenue = 66 });
+        Data.Add(new MyData { Category = "Jul", Feeder = "FMC", NetProfit = 110, Revenue = 70 });
+        Data.Add(new MyData { Category = "Aug", Feeder = "FIKA", NetProfit = 95, Revenue = 55 });
+        Data.Add(new MyData { Category = "Sep", Feeder = "DOMA", NetProfit = 80, Revenue = 65 });
+        Data.Add(new MyData { Category = "Oct", Feeder = "MISAU", NetProfit = 85, Revenue = 62 });
+        Data.Add(new MyData { Category = "Nov", Feeder = "OJU", NetProfit = 100, Revenue = 68 });
+        Data.Add(new MyData { Category = "Dec", Feeder = "NINGI", NetProfit = 130, Revenue = 75 });
+    }
+
+    public class MyData
+    {
+        public string? Feeder { get; set; }
+        public string? Category { get; set; }
+        public int NetProfit { get; set; }
+        public int Revenue { get; set; }
+    }
+}

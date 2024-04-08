@@ -1,0 +1,74 @@
+﻿@using Smart.Meters.Components.Layout.Navigation
+@inherits LayoutComponentBase
+@inject IJSRuntime JSRuntime
+
+<HeadContent>
+    <!-- Core CSS -->
+    <link rel="stylesheet" id="core-styling" href="assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" id="theme-styling" href="assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
+</HeadContent>
+
+
+<div class="layout-wrapper layout-content-navbar  ">
+    <div class="layout-container">
+
+        <NavSet>
+            <Nav Title="Dashboard" Icon="objects-vertical-bottom" Link="/" />
+
+            <NavGroup Title="Operations" Icon="cog" Badge="9">
+                <Nav Title="New Meter" Icon="plus-circle" Link="/meters/create" />
+                <Nav Title="Upload Meters" Icon="upload" Link="/meters/upload" />
+                <Nav Title="Meters" Icon="devices" Link="/meters" />
+                <Nav Title="Customers" Icon="user-check" Link="/customers" />
+            </NavGroup>
+
+            <NavGroup Title="Reports" S=true Icon="report">
+                <Nav Title="Meter Readings" S=true Icon="file-doc" Link="/meters/readings" />
+                <Nav Title="Meter Profiles" S=true Icon="file-doc" Link="/meters/download" />
+                <Nav Title="Download Template" Icon="file-blank" Link="/meters/template" />
+            </NavGroup>
+
+            <NavGroup Title="Setup" Icon="wrench">
+                <Nav Title="Users" S=true Icon="user-account" Link="/applicationusers" />
+                <Nav Title="Identity Roles" Icon="shield" Link="/identityroles" />
+                <Nav Title="33KV Feeders" Icon="category" Link="/f33kvs" />
+                <Nav Title="11KV Feeders" Icon="category-alt" Link="/f11kvs" />
+                <Nav Title="Transformers" Icon="bolt-circle" Link="/transformers" />
+            </NavGroup>
+
+            <NavHeader Title="Accounts" />
+
+        </NavSet>
+
+        <div class="layout-page">
+            <Header>
+            </Header>
+
+            <div class="content-wrapper">
+                <div class="container-xxl flex-grow-1 container-p-y">
+                    @Body
+                </div>
+            </div>
+
+            <Footer />
+        </div>
+    </div>
+
+</div>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code {
+    private IJSObjectReference _jsmodule = default!;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _jsmodule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./assets/js/main.js");
+        }
+    }
+}

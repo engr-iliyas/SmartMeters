@@ -1,0 +1,57 @@
+﻿@page "/transformers/delete"
+@inject Smart.Meters.Data.ApplicationDbContext DB
+@using Smart.Meters.Model
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Delete</PageTitle>
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Transformer</h4>
+    <hr />
+    @if (transformer is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Description</dt>
+            <dd class="col-sm-10">@transformer.Description</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">Code</dt>
+            <dd class="col-sm-10">@transformer.Code</dd>
+        </dl>
+        <EditForm method="post" Model="transformer" OnValidSubmit="DeleteTransformer" FormName="delete" Enhance>
+            <button type="submit" class="btn btn-danger" disabled="@(transformer is null)">Delete</button> |
+            <a href="/transformers">Back to List</a>
+        </EditForm>
+    }
+</div>
+
+@code {
+    Transformer? transformer;
+
+    [SupplyParameterFromQuery]
+    public int ID { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        transformer = await DB.Transformer.FirstOrDefaultAsync(m => m.ID == ID);
+
+        if (transformer is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    public async Task DeleteTransformer()
+    {
+        DB.Transformer.Remove(transformer!);
+        await DB.SaveChangesAsync();
+        NavigationManager.NavigateTo("/transformers");
+    }
+}

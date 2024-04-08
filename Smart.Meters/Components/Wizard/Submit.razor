@@ -1,0 +1,25 @@
+﻿<div class="col-12 pt-4 d-flex justify-content-between">
+    <button class="btn btn-primary  btn-prev" type="button"
+            disabled="@DisableBack" @onclick="Back">
+        @*  *@
+        <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+        <span class="align-middle d-sm-inline-block d-none">Previous</span>
+    </button>
+    <button class="btn btn-primary btn-@(IsLast ? "submit" : "next")" type="submit">
+        @if (IsLast)
+        {
+            <span class="align-middle d-sm-inline-block d-none me-sm-1">Submit</span>
+        }
+        else
+        {
+            <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span>
+            <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+        }
+    </button>
+</div>
+
+@code {
+    [Parameter] public EventCallback Back { get; set; }
+    [Parameter] public bool DisableBack { get; set; }
+    [Parameter] public bool IsLast { get; set; }
+}

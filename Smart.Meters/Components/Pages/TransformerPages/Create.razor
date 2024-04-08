@@ -1,0 +1,48 @@
+﻿@page "/transformers/create"
+@inject Smart.Meters.Data.ApplicationDbContext DB
+@using Smart.Meters.Model
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h4>Transformer</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Transformer" OnValidSubmit="AddTransformer" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+            <div class="mb-3">
+                <label for="description" class="form-label">Description:</label> 
+                <InputText id="description" @bind-Value="Transformer.Description" class="form-control" /> 
+                <ValidationMessage For="() => Transformer.Description" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="code" class="form-label">Code:</label> 
+                <InputText id="code" @bind-Value="Transformer.Code" class="form-control" /> 
+                <ValidationMessage For="() => Transformer.Code" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/transformers">Back to List</a>
+</div>
+
+@code {
+
+    [SupplyParameterFromForm]
+    public Transformer Transformer { get; set; } = new();
+
+    // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+    public async Task AddTransformer()
+    {
+        DB.Transformer.Add(Transformer);
+        await DB.SaveChangesAsync();
+        NavigationManager.NavigateTo("/transformers");
+    }
+}

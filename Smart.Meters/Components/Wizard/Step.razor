@@ -1,0 +1,20 @@
+﻿@using Smart.Meters.Components.Wizard
+@using Smart.Meters.Model
+
+@if (Parent!.ActiveStep == this)
+{
+    @ChildContent
+}
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Subtitle { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; } = default!;
+
+    [CascadingParameter]
+    protected internal Wizard? Parent { get; set; }
+    protected override void OnInitialized()
+    {
+        Parent!.AddStep(this); // putting a constraint on a method
+    }
+}

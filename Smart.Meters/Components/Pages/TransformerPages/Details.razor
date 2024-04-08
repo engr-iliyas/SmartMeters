@@ -1,0 +1,47 @@
+﻿@page "/transformers/details"
+@inject Smart.Meters.Data.ApplicationDbContext DB
+@using Smart.Meters.Model
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h4>Transformer</h4>
+    <hr />
+    @if (transformer is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Description</dt>
+            <dd class="col-sm-10">@transformer.Description</dd>
+            <dt class="col-sm-2">Code</dt>
+            <dd class="col-sm-10">@transformer.Code</dd>
+        </dl>
+        <div>
+            <a href="@($"/transformers/edit?id={transformer.ID}")">Edit</a> |
+            <a href="@($"/transformers")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    Transformer? transformer;
+
+    [SupplyParameterFromQuery]
+    public int ID { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        transformer = await DB.Transformer.FirstOrDefaultAsync(m => m.ID == ID);
+
+        if (transformer is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

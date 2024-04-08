@@ -1,0 +1,39 @@
+﻿@page "/customers"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject Smart.Meters.Data.ApplicationDbContext DB
+@using Smart.Meters.Model
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="customers/create">Create New</a>
+</p>
+
+<div class="table-responsive text-nowrap">
+    <QuickGrid Class="table text-nowrap" Items="DB.Customer">
+        <PropertyColumn Property="customer => customer.Name" />
+        <PropertyColumn Property="customer => customer.Address" />
+        <PropertyColumn Property="customer => customer.Phone" />
+
+        <TemplateColumn Context="customer">
+            <div class="dropdown">
+                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="@($"customers/edit?id={customer.ID}")">
+                        <i class="bx bx-edit-alt me-1"></i> Edit
+                    </a>
+
+                    <a class="dropdown-item" href="@($"customers/details?id={customer.ID}")">
+                        <i class="bx bx-detail me-1"></i> Details
+                    </a>
+
+                    <a class="dropdown-item" href="@($"customers/delete?id={customer.ID}")">
+                        <i class="bx bx-trash me-1"></i> Delete
+                    </a>
+                </div>
+            </div>
+        </TemplateColumn>
+    </QuickGrid>
+</div>
