@@ -17,6 +17,15 @@ namespace Smart.Meters.Model
         TwoPhase,
         ThreePhase,
     }
+    public class Log
+    {
+        public int ID { get; set; }
+        public int MeterID { get; set; }
+        public Meter? Meter { get; set; } = new();
+
+        public string Message { get; set; } = default!;
+        public DateTime Date { get; set; }
+    }
     public class Meter : IWizard
     {
         public int ID { get; set; }
@@ -26,6 +35,7 @@ namespace Smart.Meters.Model
         public DateTime InstallationDate { get; set; }
 
         public List<Reading>? Readings { get; set; } = new();
+        public List<Log>? Logs { get; set; } = new();
         //public int ProfileID { get; set; }
         public Profile? Profile { get; set; }// = new();
     }

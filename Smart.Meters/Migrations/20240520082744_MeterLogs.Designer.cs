@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Smart.Meters.Data;
@@ -11,32 +12,38 @@ using Smart.Meters.Data;
 namespace Smart.Meters.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240405090454_Init")]
-    partial class Init
+    [Migration("20240520082744_MeterLogs")]
+    partial class MeterLogs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.3");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "8.0.5")
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("Smart.Meters.Model.Customer", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("Address")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Phone")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<int?>("TransformerID")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -49,16 +56,18 @@ namespace Smart.Meters.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("Code")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Description")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("F33KVID")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -71,38 +80,67 @@ namespace Smart.Meters.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("Code")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Description")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.HasKey("ID");
 
                     b.ToTable("F33KV");
                 });
 
+            modelBuilder.Entity("Smart.Meters.Model.Log", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("MeterID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("MeterID");
+
+                    b.ToTable("Log");
+                });
+
             modelBuilder.Entity("Smart.Meters.Model.Meter", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<DateTime>("InstallationDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Model")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Seal")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<int?>("Type")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -113,40 +151,42 @@ namespace Smart.Meters.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<int>("ApplicationLayerProtocol")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("HDLC_Address")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("IP")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("LinkLayerProtocol")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("MeterID")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("MeterRemoteMode")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Port")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("SimCardNumber")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("TransmissionMode")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.HasKey("ID");
 
@@ -160,43 +200,45 @@ namespace Smart.Meters.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<double>("ExpActiveEnergyT1")
-                        .HasColumnType("REAL");
+                        .HasColumnType("double");
 
                     b.Property<double>("ExpActiveEnergyT2")
-                        .HasColumnType("REAL");
+                        .HasColumnType("double");
 
                     b.Property<double>("ExpActiveEnergyT3")
-                        .HasColumnType("REAL");
+                        .HasColumnType("double");
 
                     b.Property<double>("ExpActiveEnergyT4")
-                        .HasColumnType("REAL");
+                        .HasColumnType("double");
 
                     b.Property<double>("ImpActiveEnergyT1")
-                        .HasColumnType("REAL");
+                        .HasColumnType("double");
 
                     b.Property<double>("ImpActiveEnergyT2")
-                        .HasColumnType("REAL");
+                        .HasColumnType("double");
 
                     b.Property<double>("ImpActiveEnergyT3")
-                        .HasColumnType("REAL");
+                        .HasColumnType("double");
 
                     b.Property<double>("ImpActiveEnergyT4")
-                        .HasColumnType("REAL");
+                        .HasColumnType("double");
 
                     b.Property<int>("MeterID")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<double>("TotalExpActiveEnergy")
-                        .HasColumnType("REAL");
+                        .HasColumnType("double");
 
                     b.Property<double>("TotalImpActiveEnergy")
-                        .HasColumnType("REAL");
+                        .HasColumnType("double");
 
                     b.HasKey("ID");
 
@@ -209,16 +251,18 @@ namespace Smart.Meters.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("Code")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Description")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<int?>("F11KVID")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -243,6 +287,17 @@ namespace Smart.Meters.Migrations
                         .IsRequired();
 
                     b.Navigation("F33KV");
+                });
+
+            modelBuilder.Entity("Smart.Meters.Model.Log", b =>
+                {
+                    b.HasOne("Smart.Meters.Model.Meter", "Meter")
+                        .WithMany("Logs")
+                        .HasForeignKey("MeterID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Meter");
                 });
 
             modelBuilder.Entity("Smart.Meters.Model.Profile", b =>
@@ -286,6 +341,8 @@ namespace Smart.Meters.Migrations
 
             modelBuilder.Entity("Smart.Meters.Model.Meter", b =>
                 {
+                    b.Navigation("Logs");
+
                     b.Navigation("Profile");
 
                     b.Navigation("Readings");

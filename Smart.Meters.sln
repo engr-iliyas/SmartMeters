@@ -5,6 +5,8 @@ VisualStudioVersion = 17.10.34607.79
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Smart.Meters", "Smart.Meters\Smart.Meters.csproj", "{59B36F31-B78B-49C9-8B2F-609A596A1B21}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{FFC520F3-E069-432C-9F52-85D05A1010BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{59B36F31-B78B-49C9-8B2F-609A596A1B21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59B36F31-B78B-49C9-8B2F-609A596A1B21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59B36F31-B78B-49C9-8B2F-609A596A1B21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFC520F3-E069-432C-9F52-85D05A1010BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFC520F3-E069-432C-9F52-85D05A1010BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFC520F3-E069-432C-9F52-85D05A1010BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFC520F3-E069-432C-9F52-85D05A1010BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

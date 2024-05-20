@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Smart.Meters.Data;
 
@@ -11,9 +12,11 @@ using Smart.Meters.Data;
 namespace Smart.Meters.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240517153552_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,31 +93,6 @@ namespace Smart.Meters.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("F33KV");
-                });
-
-            modelBuilder.Entity("Smart.Meters.Model.Log", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("MeterID")
-                        .HasColumnType("int");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("MeterID");
-
-                    b.ToTable("Log");
                 });
 
             modelBuilder.Entity("Smart.Meters.Model.Meter", b =>
@@ -286,17 +264,6 @@ namespace Smart.Meters.Migrations
                     b.Navigation("F33KV");
                 });
 
-            modelBuilder.Entity("Smart.Meters.Model.Log", b =>
-                {
-                    b.HasOne("Smart.Meters.Model.Meter", "Meter")
-                        .WithMany("Logs")
-                        .HasForeignKey("MeterID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Meter");
-                });
-
             modelBuilder.Entity("Smart.Meters.Model.Profile", b =>
                 {
                     b.HasOne("Smart.Meters.Model.Meter", "Meter")
@@ -338,8 +305,6 @@ namespace Smart.Meters.Migrations
 
             modelBuilder.Entity("Smart.Meters.Model.Meter", b =>
                 {
-                    b.Navigation("Logs");
-
                     b.Navigation("Profile");
 
                     b.Navigation("Readings");

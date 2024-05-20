@@ -3,12 +3,28 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Smart.Meters.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Hosting;
+using System.Configuration;
+using Smart.Meters;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    //options.UseSqlite(builder.Configuration.GetConnectionString("ApplicationDbContext") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContext' not found.")));
-    options.UseInMemoryDatabase(databaseName: "InMemoryDatabase"));
 
+string connectionString = string.Empty;
+
+if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")))
+{
+    // Add services to the container.MySqlPameleoConnection MySQLConnection DefaultConnection
+    connectionString = builder.Configuration.GetConnectionString("MySqlPameleoConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+}
+else
+{
+    connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")!;
+}
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    //options.UseSqlite(builder.Configuration.GetConnectionString("ApplicationDbContext") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContext' not found."))
+    //options.UseInMemoryDatabase(databaseName: "InMemoryDatabase")
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+    );
 builder.Services.AddQuickGridEntityFrameworkAdapter();;
 
 // Add services to the container.
@@ -36,5 +52,8 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+// Run migrations
+app.ApplyMigrations();
 
 app.Run();

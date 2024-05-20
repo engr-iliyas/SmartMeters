@@ -113,6 +113,27 @@
                     <Card T="string" Title="Total Imported Energy" Content="@("14,857 KV")" />
                     <Card T="string" Title="Total Exported Energy" Content="@("4,679 KV")" />
                 </div>
+
+                <div class="card">
+                    <h5 class="card-header">Logs</h5>
+                    <div class="card-body">
+                        @* <small class="text-light fw-medium">Timeline</small> *@
+                        <div class="demo-inline-spacing mt-3">
+                            <ul class="list-group list-group-timeline">
+                                <li class="list-group-item list-group-timeline-primary">Starting . . .</li>
+                                <li class="list-group-item list-group-timeline-success">Connected</li>
+                                <li class="list-group-item list-group-timeline-info">Reading initialized</li>
+                                @foreach (var log in meter!.Logs!)
+                                {
+                                    <li class="list-group-item list-group-timeline-info">@log.Date | @log.Message</li>
+                                }
+                                <li class="list-group-item list-group-timeline-warning">Waiting . . .</li>
+                                <li class="list-group-item list-group-timeline-danger">Connection Closed</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <hr class="m-0">
+                </div>
             </div>
         </div>
     }
@@ -128,6 +149,7 @@
     {
         meter = await DB.Meter
         .Include(p => p.Profile)
+        .Include(l => l.Logs)
         .FirstOrDefaultAsync(m => m.ID == ID);
 
         if (meter is null)
